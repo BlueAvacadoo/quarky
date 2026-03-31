@@ -61,15 +61,19 @@ def decode_bitstring(bitstring: str) -> list[int]:
 
     Qiskit stores results with the RIGHTMOST character = qubit 0 (LSB).
     We reverse to get [q0, q1, q2] order.
+    
+    Only the first 3 bits are from the search register; ignore the rest.
 
     Args:
-        bitstring: e.g. "101" (Qiskit format, right=q0)
+        bitstring: e.g. "101" or "1010101" (Qiskit format, right=q0)
 
     Returns:
         [int, int, int] in qubit order, e.g. [1, 0, 1]
     """
+    # Take only the first 3 characters (search register)
     # Reverse: rightmost char is q0
-    return [int(c) for c in reversed(bitstring)]
+    search_bits = bitstring[:min(3, len(bitstring))]
+    return [int(c) for c in reversed(search_bits)]
 
 
 def decode_single(bitstring: str,
@@ -164,7 +168,7 @@ def run_simulation(circuit, cfg: ProblemConfig,
 
     # Convert integer keys to zero-padded bitstrings
     counts_str = {
-        format(k, "03b")[::-1]: v          # reverse for Qiskit convention
+        format(int(k), "03b")[::-1]: v          # reverse for Qiskit convention
         for k, v in counts_int.items()
     }
     # Re-reverse to standard Qiskit format (right=q0)

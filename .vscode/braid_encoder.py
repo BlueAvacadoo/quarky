@@ -228,3 +228,4 @@ if __name__ == "__main__":
     assert [1, 0, 1] in found
 
     print("\n✅  All BraidEncoder tests passed!\n")
+
